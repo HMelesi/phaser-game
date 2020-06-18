@@ -35,8 +35,6 @@
       };
 
       var player;
-      // var stars;
-      // var bombs;
       var platforms;
       var schoolPlatform;
       var schoolBuilding;
@@ -49,6 +47,11 @@
       var camControl;
       var totalWidth = 3000;
       let schoolCollider = true;
+      let trainCollider = true;
+      let planeCollider = true;
+      var train;
+      var plane;
+      var airport;
 
       function resize() {
         var canvas = game.canvas,
@@ -69,8 +72,10 @@
       var game = new Phaser.Game(config);
 
       function preload() {
-        this.load.image("bg", "assets/bg.png");
-        this.load.image("clouds", "assets/clouds.png");
+        this.load.image("sky", "assets/sunny-mountains-sky.png");
+        this.load.image("mountains", "assets/sunny-mountains-far-back.png");
+        this.load.image("hills", "assets/sunny-mountains-hills.png");
+
         this.load.image("platform", "assets/wall.png");
         this.load.image("ucl", "assets/ucl.png");
         this.load.image("uclsteps", "assets/uclsteps.png");
@@ -78,9 +83,9 @@
         this.load.image("pillar", "assets/pillar.png");
         this.load.image("star", "assets/star.png");
         this.load.image("bomb", "assets/bomb.png");
-        this.load.spritesheet("dude", "assets/dude.png", {
+        this.load.spritesheet("lady", "assets/newfemale.png", {
           frameWidth: 32,
-          frameHeight: 48,
+          frameHeight: 32,
         });
       }
 
@@ -93,20 +98,33 @@
           0,
           totalWidth,
           game.config.height,
-          "bg"
+          "sky"
         );
+        this.background.setScale(2.5);
         this.background.setOrigin(0, 0);
         this.background.setScrollFactor(0);
 
-        this.clouds = this.add.tileSprite(
+        this.mountains = this.add.tileSprite(
           0,
           0,
           totalWidth,
           game.config.height,
-          "clouds"
+          "mountains"
         );
-        this.clouds.setOrigin(0, 0);
-        this.clouds.setScrollFactor(0.5);
+        this.mountains.setScale(2.5);
+        this.mountains.setOrigin(0, 0);
+        this.mountains.setScrollFactor(0.5);
+
+        this.hills = this.add.tileSprite(
+          0,
+          0,
+          totalWidth,
+          game.config.height,
+          "hills"
+        );
+        this.hills.setScale(2.5);
+        this.hills.setOrigin(0, 0);
+        this.hills.setScrollFactor(0.7);
 
         platforms = this.physics.add.staticGroup();
 
@@ -117,25 +135,22 @@
         platforms.create(1800, 580, "platform").setScale(2).refreshBody();
         platforms.create(2200, 580, "platform").setScale(2).refreshBody();
 
+        // schoolBuilding = this.physics.add
+        //   .image(799, 402, "ucl")
+        //   .setImmovable(true);
+
+        // schoolBuilding.body.setAllowGravity(false);
+
         schoolPlatform = this.physics.add
-          .image(600, 530, "uclsteps")
+          .image(950, 400, "platform")
           .setImmovable(true);
         schoolPlatform.body.setAllowGravity(false);
 
-        schoolBuilding = this.physics.add
-          .image(599, 402, "ucl")
-          .setImmovable(true);
-
-        schoolBuilding.body.setAllowGravity(false);
-
-        platforms.create(850, 300, "platform");
-        platforms.create(1100, 200, "platform");
-
-        platforms.create(1850, 100, "platform");
-
-        pillars = this.physics.add.staticGroup();
-        pillars.create(1350, 430, "pillar");
-        pillars.create(1550, 430, "pillar");
+        platforms.create(50, 500, "platform");
+        platforms.create(750, 500, "platform");
+        platforms.create(750, 300, "platform");
+        platforms.create(950, 200, "platform");
+        platforms.create(750, 100, "platform");
 
         miniPlatform = this.physics.add
           .image(1700, 500, "miniPlatform")
@@ -153,27 +168,48 @@
           ],
         });
 
-        player = this.physics.add.sprite(100, 450, "dude");
+        train = this.physics.add
+          .image(200, 500, "miniPlatform")
+          .setImmovable(true)
+          .setVelocity(0, 0);
+
+        train.body.setAllowGravity(false);
+
+        plane = this.physics.add
+          .image(1500, 100, "miniPlatform")
+          .setImmovable(true)
+          .setVelocity(0, 0);
+
+        plane.body.setAllowGravity(false);
+
+        airport = this.physics.add
+          .image(700, 50, "star")
+          .setImmovable(true)
+          .setVelocity(0, 0);
+
+        airport.body.setAllowGravity(false);
+
+        player = this.physics.add.sprite(100, 450, "lady");
 
         player.setBounce(0.2);
         player.setCollideWorldBounds(false);
 
         this.anims.create({
           key: "left",
-          frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
+          frames: this.anims.generateFrameNumbers("lady", { start: 3, end: 5 }),
           frameRate: 10,
           repeat: -1,
         });
 
         this.anims.create({
           key: "turn",
-          frames: [{ key: "dude", frame: 4 }],
+          frames: [{ key: "lady", frame: 1 }],
           frameRate: 20,
         });
 
         this.anims.create({
           key: "right",
-          frames: this.anims.generateFrameNumbers("dude", { start: 5, end: 8 }),
+          frames: this.anims.generateFrameNumbers("lady", { start: 6, end: 8 }),
           frameRate: 10,
           repeat: -1,
         });
@@ -193,7 +229,6 @@
         // bombs = this.physics.add.group();
 
         this.physics.add.collider(player, platforms);
-        this.physics.add.collider(player, pillars);
         this.physics.add.collider(player, miniPlatform);
         this.physics.add.collider(
           player,
@@ -205,6 +240,27 @@
           this
         );
         this.physics.add.collider(player, schoolPlatform);
+        this.physics.add.collider(
+          player,
+          train,
+          hitTrain,
+          () => {
+            return trainCollider;
+          },
+          this
+        );
+        this.physics.add.collider(player, train);
+        this.physics.add.collider(player, schoolPlatform);
+        this.physics.add.collider(
+          player,
+          airport,
+          callPlane,
+          () => {
+            return planeCollider;
+          },
+          this
+        );
+        this.physics.add.collider(player, plane);
 
         // this.physics.add.collider(stars, platforms);
         // this.physics.add.collider(bombs, platforms);
@@ -241,43 +297,72 @@
         }
       }
 
-      function collectStar(player, star) {
-        star.disableBody(true, true);
+      // function collectStar(player, star) {
+      //   star.disableBody(true, true);
 
-        //  Add and update the score
-        score += 10;
-        scoreText.setText("Score: " + score);
+      //   score += 10;
+      //   scoreText.setText("Score: " + score);
 
-        if (stars.countActive(true) === 0) {
-          //  A new batch of stars to collect
-          stars.children.iterate(function (child) {
-            child.enableBody(true, child.x, 0, true, true);
-          });
+      //   if (stars.countActive(true) === 0) {
+      //     stars.children.iterate(function (child) {
+      //       child.enableBody(true, child.x, 0, true, true);
+      //     });
 
-          var x =
-            player.x < 400
-              ? Phaser.Math.Between(400, 800)
-              : Phaser.Math.Between(0, 400);
+      //     var x =
+      //       player.x < 400
+      //         ? Phaser.Math.Between(400, 800)
+      //         : Phaser.Math.Between(0, 400);
 
-          var bomb = bombs.create(x, 16, "bomb");
-          bomb.setBounce(1);
-          bomb.setCollideWorldBounds(true);
-          bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-          bomb.allowGravity = false;
-        }
-      }
+      //     var bomb = bombs.create(x, 16, "bomb");
+      //     bomb.setBounce(1);
+      //     bomb.setCollideWorldBounds(true);
+      //     bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+      //     bomb.allowGravity = false;
+      //   }
+      // }
 
       function hitSchool() {
         schoolCollider = false;
         this.add.text(
-          500,
-          200,
+          650,
+          390,
           "2012: graduated from UCL with BSci Mathematics",
           {
             fontSize: "12px",
-            fill: "#ffffff",
+            color: "#fff",
+            fixedWidth: 200,
+            wordWrap: {
+              width: 200,
+            },
+            backgroundColor: "#000",
           }
         );
+      }
+
+      function hitTrain() {
+        trainCollider = false;
+        console.log("on train");
+        this.tweens.timeline({
+          targets: train.body.velocity,
+          tweens: [
+            { x: 100, y: 0, duration: 4000, ease: "Stepped" },
+            { x: 0, y: 0, duration: 4000, ease: "Stepped" },
+          ],
+        });
+      }
+
+      function callPlane() {
+        planeCollider = false;
+        console.log("plane coming");
+        this.tweens.timeline({
+          targets: plane.body.velocity,
+          tweens: [
+            { x: -200, y: 0, duration: 3000, ease: "Stepped" },
+            { x: 0, y: 0, duration: 1000, ease: "Stepped" },
+            { x: 200, y: 0, duration: 3000, ease: "Stepped" },
+            { x: 0, y: 0, duration: 1000, ease: "Stepped" },
+          ],
+        });
       }
 
       function hitBomb(player, bomb) {
