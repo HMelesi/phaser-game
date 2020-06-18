@@ -35,9 +35,11 @@
       };
 
       var player;
-      var stars;
-      var bombs;
+      // var stars;
+      // var bombs;
       var platforms;
+      var pillars;
+      var miniPlatform;
       var cursors;
       var score = 0;
       var gameOver = false;
@@ -64,9 +66,11 @@
       var game = new Phaser.Game(config);
 
       function preload() {
-        this.load.image("sky", "assets/sky.png");
+        this.load.image("bg", "assets/bg.png");
         this.load.image("clouds", "assets/clouds.png");
-        this.load.image("ground", "assets/platform.png");
+        this.load.image("platform", "assets/wall.png");
+        this.load.image("miniPlatform", "assets/miniwall.png");
+        this.load.image("pillar", "assets/pillar.png");
         this.load.image("star", "assets/star.png");
         this.load.image("bomb", "assets/bomb.png");
         this.load.spritesheet("dude", "assets/dude.png", {
@@ -84,7 +88,7 @@
           0,
           totalWidth,
           game.config.height,
-          "sky"
+          "bg"
         );
         this.background.setOrigin(0, 0);
         this.background.setScrollFactor(0);
@@ -101,20 +105,30 @@
 
         platforms = this.physics.add.staticGroup();
 
-        platforms.create(400, 568, "ground").setScale(2).refreshBody();
-        platforms.create(1200, 568, "ground").setScale(2).refreshBody();
-        platforms.create(2000, 568, "ground").setScale(2).refreshBody();
+        platforms.create(200, 580, "platform").setScale(2).refreshBody();
+        platforms.create(600, 580, "platform").setScale(2).refreshBody();
+        platforms.create(1000, 580, "platform").setScale(2).refreshBody();
+        platforms.create(1400, 580, "platform").setScale(2).refreshBody();
+        platforms.create(1800, 580, "platform").setScale(2).refreshBody();
+        platforms.create(2200, 580, "platform").setScale(2).refreshBody();
 
-        platforms.create(600, 400, "ground");
-        platforms.create(50, 250, "ground");
-        platforms.create(750, 220, "ground");
+        platforms.create(600, 400, "platform");
+        platforms.create(850, 300, "platform");
+        platforms.create(1100, 200, "platform");
+
+        pillars = this.physics.add.staticGroup();
+        pillars.create(1350, 430, "pillar");
+        pillars.create(1550, 430, "pillar");
+
+        miniPlatform = this.physics.add.sprite(200, 450, "miniPlatform");
+
+        miniPlatform.body.setAllowGravity(false);
 
         player = this.physics.add.sprite(100, 450, "dude");
 
         player.setBounce(0.2);
         player.setCollideWorldBounds(false);
 
-        //  Our player animations, turning, walking left and walking right.
         this.anims.create({
           key: "left",
           frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
@@ -135,20 +149,19 @@
           repeat: -1,
         });
 
-        //  Input Events
         cursors = this.input.keyboard.createCursorKeys();
 
-        stars = this.physics.add.group({
-          key: "star",
-          repeat: 11,
-          setXY: { x: 12, y: 0, stepX: 70 },
-        });
+        // stars = this.physics.add.group({
+        //   key: "star",
+        //   repeat: 11,
+        //   setXY: { x: 12, y: 0, stepX: 70 },
+        // });
 
-        stars.children.iterate(function (child) {
-          child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-        });
+        // stars.children.iterate(function (child) {
+        //   child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+        // });
 
-        bombs = this.physics.add.group();
+        // bombs = this.physics.add.group();
 
         //  The score
         scoreText = this.add.text(16, 16, "score: 0", {
@@ -156,15 +169,16 @@
           fill: "#000",
         });
 
-        //  Collide the player and the stars with the platforms
         this.physics.add.collider(player, platforms);
-        this.physics.add.collider(stars, platforms);
-        this.physics.add.collider(bombs, platforms);
+        this.physics.add.collider(player, pillars);
+        this.physics.add.collider(player, miniPlatform);
 
-        //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-        this.physics.add.overlap(player, stars, collectStar, null, this);
+        // this.physics.add.collider(stars, platforms);
+        // this.physics.add.collider(bombs, platforms);
 
-        this.physics.add.collider(player, bombs, hitBomb, null, this);
+        // this.physics.add.overlap(player, stars, collectStar, null, this);
+
+        // this.physics.add.collider(player, bombs, hitBomb, null, this);
 
         this.cameras.main.setBounds(0, 0, totalWidth, 600);
         this.cameras.main.startFollow(player);
