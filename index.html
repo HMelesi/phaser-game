@@ -38,6 +38,8 @@
       // var stars;
       // var bombs;
       var platforms;
+      var schoolPlatform;
+      var schoolBuilding;
       var pillars;
       var miniPlatform;
       var cursors;
@@ -46,6 +48,7 @@
       var scoreText;
       var camControl;
       var totalWidth = 3000;
+      let schoolCollider = true;
 
       function resize() {
         var canvas = game.canvas,
@@ -69,6 +72,8 @@
         this.load.image("bg", "assets/bg.png");
         this.load.image("clouds", "assets/clouds.png");
         this.load.image("platform", "assets/wall.png");
+        this.load.image("ucl", "assets/ucl.png");
+        this.load.image("uclsteps", "assets/uclsteps.png");
         this.load.image("miniPlatform", "assets/miniwall.png");
         this.load.image("pillar", "assets/pillar.png");
         this.load.image("star", "assets/star.png");
@@ -112,7 +117,17 @@
         platforms.create(1800, 580, "platform").setScale(2).refreshBody();
         platforms.create(2200, 580, "platform").setScale(2).refreshBody();
 
-        platforms.create(600, 400, "platform");
+        schoolPlatform = this.physics.add
+          .image(600, 530, "uclsteps")
+          .setImmovable(true);
+        schoolPlatform.body.setAllowGravity(false);
+
+        schoolBuilding = this.physics.add
+          .image(599, 402, "ucl")
+          .setImmovable(true);
+
+        schoolBuilding.body.setAllowGravity(false);
+
         platforms.create(850, 300, "platform");
         platforms.create(1100, 200, "platform");
 
@@ -177,15 +192,19 @@
 
         // bombs = this.physics.add.group();
 
-        //  The score
-        scoreText = this.add.text(16, 16, "score: 0", {
-          fontSize: "32px",
-          fill: "#000",
-        });
-
         this.physics.add.collider(player, platforms);
         this.physics.add.collider(player, pillars);
         this.physics.add.collider(player, miniPlatform);
+        this.physics.add.collider(
+          player,
+          schoolPlatform,
+          hitSchool,
+          () => {
+            return schoolCollider;
+          },
+          this
+        );
+        this.physics.add.collider(player, schoolPlatform);
 
         // this.physics.add.collider(stars, platforms);
         // this.physics.add.collider(bombs, platforms);
@@ -246,6 +265,19 @@
           bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
           bomb.allowGravity = false;
         }
+      }
+
+      function hitSchool() {
+        schoolCollider = false;
+        this.add.text(
+          500,
+          200,
+          "2012: graduated from UCL with BSci Mathematics",
+          {
+            fontSize: "12px",
+            fill: "#ffffff",
+          }
+        );
       }
 
       function hitBomb(player, bomb) {
