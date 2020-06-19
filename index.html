@@ -44,7 +44,7 @@
       var gameOver = false;
       var scoreText;
       var camControl;
-      var totalWidth = 3000;
+      var totalWidth = 3840;
       let schoolCollider = true;
       let trainCollider = true;
       let planeCollider = true;
@@ -76,6 +76,10 @@
       function preload() {
         this.load.tilemapTiledJSON("level1", "assets/maps/one..json");
         this.load.tilemapTiledJSON("level2", "assets/maps/two..json");
+        this.load.tilemapTiledJSON("level3", "assets/maps/three..json");
+        this.load.tilemapTiledJSON("level4", "assets/maps/four..json");
+        this.load.tilemapTiledJSON("level5", "assets/maps/five..json");
+        this.load.tilemapTiledJSON("level6", "assets/maps/six..json");
         this.load.image("bg1", "assets/11_background.png");
         this.load.image("bg2", "assets/10_distant_clouds.png");
         this.load.image("bg3", "assets/09_distant_clouds1.png");
@@ -186,6 +190,74 @@
         twolayer.setCollisionBetween(42, 45);
         twolayer.setCollisionBetween(50, 52);
 
+        const threemap = this.make.tilemap({ key: "level3" });
+        const threetileset = threemap.addTilesetImage("nature", "tiles");
+        const threelayer = threemap.createStaticLayer(
+          "Tile Layer 1",
+          threetileset,
+          1280,
+          0
+        );
+
+        threelayer.setCollisionBetween(1, 7);
+        threelayer.setCollisionBetween(11, 11);
+        threelayer.setCollisionBetween(14, 21);
+        threelayer.setCollisionBetween(28, 28);
+        threelayer.setCollisionBetween(32, 35);
+        threelayer.setCollisionBetween(42, 45);
+        threelayer.setCollisionBetween(50, 52);
+
+        const fourmap = this.make.tilemap({ key: "level4" });
+        const fourtileset = fourmap.addTilesetImage("nature", "tiles");
+        const fourlayer = fourmap.createStaticLayer(
+          "Tile Layer 1",
+          fourtileset,
+          1920,
+          0
+        );
+
+        fourlayer.setCollisionBetween(1, 7);
+        fourlayer.setCollisionBetween(11, 11);
+        fourlayer.setCollisionBetween(14, 21);
+        fourlayer.setCollisionBetween(28, 28);
+        fourlayer.setCollisionBetween(32, 35);
+        fourlayer.setCollisionBetween(42, 45);
+        fourlayer.setCollisionBetween(50, 52);
+
+        const fivemap = this.make.tilemap({ key: "level5" });
+        const fivetileset = fivemap.addTilesetImage("nature", "tiles");
+        const fivelayer = fivemap.createStaticLayer(
+          "Tile Layer 1",
+          fivetileset,
+          2560,
+          0
+        );
+
+        fivelayer.setCollisionBetween(1, 7);
+        fivelayer.setCollisionBetween(11, 11);
+        fivelayer.setCollisionBetween(14, 21);
+        fivelayer.setCollisionBetween(28, 28);
+        fivelayer.setCollisionBetween(32, 35);
+        fivelayer.setCollisionBetween(42, 45);
+        fivelayer.setCollisionBetween(50, 52);
+
+        const sixmap = this.make.tilemap({ key: "level6" });
+        const sixtileset = sixmap.addTilesetImage("nature", "tiles");
+        const sixlayer = sixmap.createStaticLayer(
+          "Tile Layer 1",
+          sixtileset,
+          3200,
+          0
+        );
+
+        sixlayer.setCollisionBetween(1, 7);
+        sixlayer.setCollisionBetween(11, 11);
+        sixlayer.setCollisionBetween(14, 21);
+        sixlayer.setCollisionBetween(28, 28);
+        sixlayer.setCollisionBetween(32, 35);
+        sixlayer.setCollisionBetween(42, 45);
+        sixlayer.setCollisionBetween(50, 52);
+
         // // schoolBuilding = this.physics.add
         // //   .image(799, 402, "ucl")
         // //   .setImmovable(true);
@@ -281,6 +353,10 @@
         // bombs = this.physics.add.group();
         this.physics.add.collider(player, onelayer);
         this.physics.add.collider(player, twolayer);
+        this.physics.add.collider(player, threelayer);
+        this.physics.add.collider(player, fourlayer);
+        this.physics.add.collider(player, fivelayer);
+        this.physics.add.collider(player, sixlayer);
         this.physics.add.collider(player, platforms);
         this.physics.add.collider(player, miniPlatform);
         this.physics.add.collider(
