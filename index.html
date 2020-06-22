@@ -34,10 +34,6 @@
       };
 
       var player;
-      var platforms;
-      var schoolPlatform;
-      var schoolBuilding;
-      var pillars;
       var miniPlatform;
       var cursors;
       var score = 0;
@@ -45,14 +41,7 @@
       var scoreText;
       var camControl;
       var totalWidth = 3840;
-      let schoolCollider = true;
-      let trainCollider = true;
-      let planeCollider = true;
       let shortCutCollider = true;
-      let playerOnGround = false;
-      var train;
-      var plane;
-      var airport;
       var shortCut;
       var gems;
       var dialogue;
@@ -164,15 +153,13 @@
         dialogue = this.add.image(320, 125, "dialogue");
         dialogue.setScrollFactor(0);
 
-        scoreText = this.add.text(170, 50, "0", {
+        scoreText = this.add.text(200, 80, "0", {
           fontSize: "12px",
           color: "#000",
-          padding: { x: 20, y: 20 },
-          fixedWidth: 300,
+          fixedWidth: 260,
           fixedHeight: 200,
-          align: "center",
           wordWrap: {
-            width: 300,
+            width: 250,
           },
         });
 
@@ -187,8 +174,8 @@
           0
         );
 
-        onelayer.setCollisionBetween(1, 7);
-        onelayer.setCollisionBetween(11, 11);
+        onelayer.setCollisionBetween(1, 8);
+        onelayer.setCollisionBetween(10, 11);
         onelayer.setCollisionBetween(14, 21);
         onelayer.setCollisionBetween(28, 28);
         onelayer.setCollisionBetween(32, 35);
@@ -204,8 +191,8 @@
           0
         );
 
-        twolayer.setCollisionBetween(1, 7);
-        twolayer.setCollisionBetween(11, 11);
+        twolayer.setCollisionBetween(1, 8);
+        twolayer.setCollisionBetween(10, 11);
         twolayer.setCollisionBetween(14, 21);
         twolayer.setCollisionBetween(28, 28);
         twolayer.setCollisionBetween(32, 35);
@@ -221,8 +208,8 @@
           0
         );
 
-        threelayer.setCollisionBetween(1, 7);
-        threelayer.setCollisionBetween(11, 11);
+        threelayer.setCollisionBetween(1, 8);
+        threelayer.setCollisionBetween(10, 11);
         threelayer.setCollisionBetween(14, 21);
         threelayer.setCollisionBetween(28, 28);
         threelayer.setCollisionBetween(32, 35);
@@ -238,8 +225,8 @@
           0
         );
 
-        fourlayer.setCollisionBetween(1, 7);
-        fourlayer.setCollisionBetween(11, 11);
+        fourlayer.setCollisionBetween(1, 8);
+        fourlayer.setCollisionBetween(10, 11);
         fourlayer.setCollisionBetween(14, 21);
         fourlayer.setCollisionBetween(28, 28);
         fourlayer.setCollisionBetween(32, 35);
@@ -255,8 +242,8 @@
           0
         );
 
-        fivelayer.setCollisionBetween(1, 7);
-        fivelayer.setCollisionBetween(11, 11);
+        fivelayer.setCollisionBetween(1, 8);
+        fivelayer.setCollisionBetween(10, 11);
         fivelayer.setCollisionBetween(14, 21);
         fivelayer.setCollisionBetween(28, 28);
         fivelayer.setCollisionBetween(32, 35);
@@ -272,56 +259,13 @@
           0
         );
 
-        sixlayer.setCollisionBetween(1, 7);
-        sixlayer.setCollisionBetween(11, 11);
+        sixlayer.setCollisionBetween(1, 8);
+        sixlayer.setCollisionBetween(10, 11);
         sixlayer.setCollisionBetween(14, 21);
         sixlayer.setCollisionBetween(28, 28);
         sixlayer.setCollisionBetween(32, 35);
         sixlayer.setCollisionBetween(42, 45);
         sixlayer.setCollisionBetween(50, 52);
-
-        // // schoolBuilding = this.physics.add
-        // //   .image(799, 402, "ucl")
-        // //   .setImmovable(true);
-
-        // // schoolBuilding.body.setAllowGravity(false);
-
-        // schoolPlatform = this.physics.add
-        //   .image(1000, 400, "platform")
-        //   .setImmovable(true);
-        // schoolPlatform.body.setAllowGravity(false);
-
-        // train = this.physics.add
-        //   .image(300, 500, "miniPlatform")
-        //   .setImmovable(true)
-        //   .setVelocity(0, 0);
-
-        // train.body.setAllowGravity(false);
-
-        shortCut = this.physics.add.group({
-          immovable: true,
-          allowGravity: false,
-          velocityX: 0,
-          velocityY: 0,
-        });
-
-        shortCut.create(168, 552, "tileassets", (frame = 42));
-        shortCut.create(184, 552, "tileassets", (frame = 43));
-        shortCut.create(200, 552, "tileassets", (frame = 44));
-
-        // plane = this.physics.add
-        //   .image(1550, 100, "miniPlatform")
-        //   .setImmovable(true)
-        //   .setVelocity(0, 0);
-
-        // plane.body.setAllowGravity(false);
-
-        // airport = this.physics.add
-        //   .image(750, 50, "star")
-        //   .setImmovable(true)
-        //   .setVelocity(0, 0);
-
-        // airport.body.setAllowGravity(false);
 
         // miniPlatform = this.physics.add
         //   .image(1650, 200, "miniPlatform")
@@ -367,61 +311,34 @@
         cursors = this.input.keyboard.createCursorKeys();
 
         gems = this.physics.add.staticGroup();
-        gems.create(100, 340, "tileassets", (frame = 54));
+        gems.create(104, 376, "tileassets", (frame = 54));
+        gems.create(152, 536, "tileassets", (frame = 55));
+        gems.create(360, 392, "tileassets", (frame = 61));
+        gems.create(632, 344, "tileassets", (frame = 55));
+        gems.create(536, 584, "tileassets", (frame = 54));
+        gems.create(840, 488, "tileassets", (frame = 61));
+        gems.create(1032, 424, "tileassets", (frame = 54));
+        gems.create(1000, 536, "tileassets", (frame = 55));
 
-        stars = this.physics.add.group({
-          key: "star",
-          repeat: 11,
-          setXY: { x: 12, y: 0, stepX: 70 },
-        });
-
-        // bombs = this.physics.add.group();
         this.physics.add.collider(player, onelayer);
         this.physics.add.collider(player, twolayer);
         this.physics.add.collider(player, threelayer);
         this.physics.add.collider(player, fourlayer);
         this.physics.add.collider(player, fivelayer);
         this.physics.add.collider(player, sixlayer);
-        // this.physics.add.collider(player, platforms);
-        // this.physics.add.collider(player, miniPlatform);
 
         // this.physics.add.collider(
         //   player,
-        //   train,
-        //   hitTrain,
+        //   shortCut,
+        //   takeShortCut,
         //   () => {
-        //     return trainCollider;
+        //     return shortCutCollider;
         //   },
         //   this
         // );
-        // this.physics.add.collider(player, train);
-        // this.physics.add.collider(
-        //   player,
-        //   airport,
-        //   callPlane,
-        //   () => {
-        //     return planeCollider;
-        //   },
-        //   this
-        // );
-        // this.physics.add.collider(player, plane);
-        this.physics.add.collider(
-          player,
-          shortCut,
-          takeShortCut,
-          () => {
-            return shortCutCollider;
-          },
-          this
-        );
-        this.physics.add.collider(player, shortCut);
-
-        // this.physics.add.collider(stars, platforms);
-        // this.physics.add.collider(bombs, platforms);
+        // this.physics.add.collider(player, shortCut);
 
         this.physics.add.overlap(player, gems, collectGem, null, this);
-
-        // this.physics.add.collider(player, bombs, hitBomb, null, this);
 
         this.cameras.main.setBounds(0, 0, totalWidth, game.config.height);
         this.cameras.main.startFollow(player);
@@ -451,9 +368,53 @@
         }
 
         if (score === 0) {
-          scoreText.setText("collect the gems to learn more");
+          scoreText.setText(
+            "Hello! And Welcome to the interactive CV for me, Harriet Melesi. Collect the gems to learn more about me."
+          );
         } else if (score === 10) {
-          scoreText.setText("2012: graduated from UCL with BSci Mathematics");
+          scoreText.setText(
+            "I was born and raised in Norwich, United Kingdom. It was there I gained 12 GCSEs and 4 A-levels."
+          );
+        } else if (score === 20) {
+          scoreText.setText(
+            "I moved to London in 2009 to study a BSci in Mathematics with Modern Languages at UCL in London."
+          );
+        } else if (score === 30) {
+          scoreText.setText(
+            "I graduated with a 2:1 in 2012 and decided started a career in Advertising."
+          );
+        } else if (score === 40) {
+          scoreText.setText(
+            "I worked at an Ad Tech company called BrightRoll from 2012 to 2014, trafficking online advertising campaigns."
+          );
+        } else if (score === 50) {
+          scoreText.setText(
+            "After this I moved on to a couple of different roles at Hearst Magazines in Digital Media project management from 2014 to 2016."
+          );
+        } else if (score === 60) {
+          scoreText.setText(
+            "My final job in Marketing was for Estee Lauder on a short contract for most of 2016 as a Campaign Manager."
+          );
+        } else if (score === 70) {
+          scoreText.setText(
+            "After 7 years in London I needed a change, and moved to Vancouver, Canada to travel!"
+          );
+        } else if (score === 80) {
+          scoreText.setText(
+            "I worked in hospitality in Vancouver to fund my travels around the country and into America."
+          );
+        } else if (score === 90) {
+          scoreText.setText(
+            "In Summer 2018 I moved back to the UK, and developed a taste for craft beer working at Brew York as a Supervisor."
+          );
+        } else if (score === 100) {
+          scoreText.setText(
+            "At the end of 2019 I moved to Manchester, and applied for a coding bootcamp at Northcoders."
+          );
+        } else if (score === 110) {
+          scoreText.setText(
+            "I started the 12 week intensive course in February 2020, and graduated in 12 weeks in May."
+          );
         }
       }
 
@@ -463,47 +424,11 @@
         score += 10;
       }
 
-      // function hitTrain() {
-      //   trainCollider = false;
-      //   console.log("on train");
-      //   this.tweens.timeline({
-      //     targets: train.body.velocity,
-      //     tweens: [
-      //       { x: 100, y: 0, duration: 3220, ease: "Sine" },
-      //       { x: 0, y: 0, duration: 4000, ease: "Sine" },
-      //     ],
-      //   });
-      // }
-
       // function takeShortCut() {
       //   shortCutCollider = false;
       //   console.log("taking shortcut");
 
       // }
-
-      function callPlane() {
-        planeCollider = false;
-        console.log("plane coming");
-        this.tweens.timeline({
-          targets: plane.body.velocity,
-          tweens: [
-            { x: -200, y: 0, duration: 3000, ease: "Stepped" },
-            { x: 0, y: 0, duration: 1000, ease: "Stepped" },
-            { x: 200, y: 0, duration: 3000, ease: "Stepped" },
-            { x: 0, y: 0, duration: 1000, ease: "Stepped" },
-          ],
-        });
-      }
-
-      function hitBomb(player, bomb) {
-        this.physics.pause();
-
-        player.setTint(0xff0000);
-
-        player.anims.play("turn");
-
-        gameOver = true;
-      }
     </script>
   </body>
 </html>
