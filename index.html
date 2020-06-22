@@ -150,10 +150,10 @@
         this.bg5.setOrigin(0, 0);
         this.bg5.setScrollFactor(0.9);
 
-        dialogue = this.add.image(320, 125, "dialogue");
+        dialogue = this.add.image(320, 150, "dialogue");
         dialogue.setScrollFactor(0);
 
-        scoreText = this.add.text(200, 80, "0", {
+        scoreText = this.add.text(200, 120, "0", {
           fontSize: "12px",
           color: "#000",
           fixedWidth: 260,
@@ -381,7 +381,7 @@
           );
         } else if (score === 30) {
           scoreText.setText(
-            "I graduated with a 2:1 in 2012 and decided started a career in Advertising."
+            "I graduated with a 2:1 in 2012 and started a career in Advertising."
           );
         } else if (score === 40) {
           scoreText.setText(
