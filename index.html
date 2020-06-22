@@ -54,6 +54,8 @@
       var plane;
       var airport;
       var shortCut;
+      var gems;
+      var dialogue;
 
       function resize() {
         var canvas = game.canvas,
@@ -85,16 +87,19 @@
         this.load.image("bg3", "assets/09_distant_clouds1.png");
         this.load.image("bg4", "assets/08_clouds.png");
         this.load.image("bg5", "assets/07_huge_clouds.png");
-        this.load.image("platform", "assets/wall.png");
+
         this.load.image("miniPlatform", "assets/miniwall.png");
-        this.load.image("pillar", "assets/pillar.png");
-        this.load.image("star", "assets/star.png");
-        this.load.image("bomb", "assets/bomb.png");
+        this.load.image("dialogue", "assets/dialogue.png");
+
         this.load.spritesheet("lady", "assets/newfemale.png", {
           frameWidth: 32,
           frameHeight: 32,
         });
         this.load.image("tiles", "assets/naturetiles.png");
+        this.load.spritesheet("tileassets", "assets/naturetiles.png", {
+          frameWidth: 16,
+          frameHeight: 16,
+        });
       }
 
       function create() {
@@ -155,6 +160,23 @@
 
         this.bg5.setOrigin(0, 0);
         this.bg5.setScrollFactor(0.9);
+
+        dialogue = this.add.image(320, 125, "dialogue");
+        dialogue.setScrollFactor(0);
+
+        scoreText = this.add.text(170, 50, "0", {
+          fontSize: "12px",
+          color: "#000",
+          padding: { x: 20, y: 20 },
+          fixedWidth: 300,
+          fixedHeight: 200,
+          align: "center",
+          wordWrap: {
+            width: 300,
+          },
+        });
+
+        scoreText.setScrollFactor(0);
 
         const onemap = this.make.tilemap({ key: "level1" });
         const onetileset = onemap.addTilesetImage("nature", "tiles");
@@ -276,12 +298,16 @@
 
         // train.body.setAllowGravity(false);
 
-        // shortCut = this.physics.add
-        //   .image(0, 630, "miniPlatform")
-        //   .setImmovable(true)
-        //   .setVelocity(0, 0);
+        shortCut = this.physics.add.group({
+          immovable: true,
+          allowGravity: false,
+          velocityX: 0,
+          velocityY: 0,
+        });
 
-        // shortCut.body.setAllowGravity(false);
+        shortCut.create(168, 552, "tileassets", (frame = 42));
+        shortCut.create(184, 552, "tileassets", (frame = 43));
+        shortCut.create(200, 552, "tileassets", (frame = 44));
 
         // plane = this.physics.add
         //   .image(1550, 100, "miniPlatform")
@@ -340,15 +366,14 @@
 
         cursors = this.input.keyboard.createCursorKeys();
 
-        // stars = this.physics.add.group({
-        //   key: "star",
-        //   repeat: 11,
-        //   setXY: { x: 12, y: 0, stepX: 70 },
-        // });
+        gems = this.physics.add.staticGroup();
+        gems.create(100, 340, "tileassets", (frame = 54));
 
-        // stars.children.iterate(function (child) {
-        //   child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-        // });
+        stars = this.physics.add.group({
+          key: "star",
+          repeat: 11,
+          setXY: { x: 12, y: 0, stepX: 70 },
+        });
 
         // bombs = this.physics.add.group();
         this.physics.add.collider(player, onelayer);
@@ -357,39 +382,29 @@
         this.physics.add.collider(player, fourlayer);
         this.physics.add.collider(player, fivelayer);
         this.physics.add.collider(player, sixlayer);
-        this.physics.add.collider(player, platforms);
-        this.physics.add.collider(player, miniPlatform);
-        this.physics.add.collider(
-          player,
-          schoolPlatform,
-          hitSchool,
-          () => {
-            return schoolCollider;
-          },
-          this
-        );
-        this.physics.add.collider(player, schoolPlatform);
-        this.physics.add.collider(
-          player,
-          train,
-          hitTrain,
-          () => {
-            return trainCollider;
-          },
-          this
-        );
-        this.physics.add.collider(player, train);
-        this.physics.add.collider(player, schoolPlatform);
-        this.physics.add.collider(
-          player,
-          airport,
-          callPlane,
-          () => {
-            return planeCollider;
-          },
-          this
-        );
-        this.physics.add.collider(player, plane);
+        // this.physics.add.collider(player, platforms);
+        // this.physics.add.collider(player, miniPlatform);
+
+        // this.physics.add.collider(
+        //   player,
+        //   train,
+        //   hitTrain,
+        //   () => {
+        //     return trainCollider;
+        //   },
+        //   this
+        // );
+        // this.physics.add.collider(player, train);
+        // this.physics.add.collider(
+        //   player,
+        //   airport,
+        //   callPlane,
+        //   () => {
+        //     return planeCollider;
+        //   },
+        //   this
+        // );
+        // this.physics.add.collider(player, plane);
         this.physics.add.collider(
           player,
           shortCut,
@@ -404,7 +419,7 @@
         // this.physics.add.collider(stars, platforms);
         // this.physics.add.collider(bombs, platforms);
 
-        // this.physics.add.overlap(player, stars, collectStar, null, this);
+        this.physics.add.overlap(player, gems, collectGem, null, this);
 
         // this.physics.add.collider(player, bombs, hitBomb, null, this);
 
@@ -434,73 +449,37 @@
         if (cursors.up.isDown && player.body.blocked.down) {
           player.setVelocityY(-200);
         }
+
+        if (score === 0) {
+          scoreText.setText("collect the gems to learn more");
+        } else if (score === 10) {
+          scoreText.setText("2012: graduated from UCL with BSci Mathematics");
+        }
       }
 
-      // function collectStar(player, star) {
-      //   star.disableBody(true, true);
+      function collectGem(player, gem) {
+        gem.disableBody(true, true);
 
-      //   score += 10;
-      //   scoreText.setText("Score: " + score);
+        score += 10;
+      }
 
-      //   if (stars.countActive(true) === 0) {
-      //     stars.children.iterate(function (child) {
-      //       child.enableBody(true, child.x, 0, true, true);
-      //     });
-
-      //     var x =
-      //       player.x < 400
-      //         ? Phaser.Math.Between(400, 800)
-      //         : Phaser.Math.Between(0, 400);
-
-      //     var bomb = bombs.create(x, 16, "bomb");
-      //     bomb.setBounce(1);
-      //     bomb.setCollideWorldBounds(true);
-      //     bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-      //     bomb.allowGravity = false;
-      //   }
+      // function hitTrain() {
+      //   trainCollider = false;
+      //   console.log("on train");
+      //   this.tweens.timeline({
+      //     targets: train.body.velocity,
+      //     tweens: [
+      //       { x: 100, y: 0, duration: 3220, ease: "Sine" },
+      //       { x: 0, y: 0, duration: 4000, ease: "Sine" },
+      //     ],
+      //   });
       // }
 
-      function hitSchool() {
-        schoolCollider = false;
-        this.add.text(
-          700,
-          390,
-          "2012: graduated from UCL with BSci Mathematics",
-          {
-            fontSize: "12px",
-            color: "#fff",
-            fixedWidth: 200,
-            wordWrap: {
-              width: 200,
-            },
-            backgroundColor: "#000",
-          }
-        );
-      }
+      // function takeShortCut() {
+      //   shortCutCollider = false;
+      //   console.log("taking shortcut");
 
-      function hitTrain() {
-        trainCollider = false;
-        console.log("on train");
-        this.tweens.timeline({
-          targets: train.body.velocity,
-          tweens: [
-            { x: 100, y: 0, duration: 3220, ease: "Sine" },
-            { x: 0, y: 0, duration: 4000, ease: "Sine" },
-          ],
-        });
-      }
-
-      function takeShortCut() {
-        shortCutCollider = false;
-        console.log("taking shortcut");
-        this.tweens.timeline({
-          targets: shortCut.body.velocity,
-          tweens: [
-            { x: 300, y: 0, duration: 10000, ease: "Sine" },
-            { x: 0, y: 0, duration: 4000, ease: "Sine" },
-          ],
-        });
-      }
+      // }
 
       function callPlane() {
         planeCollider = false;
