@@ -1,5 +1,5 @@
-# Phaser - learning
+# Phaser - About Me
 
 ## About
 
-A GitHub repository for learning Phaser.
+This is a work in progress project built as my first attempt playing with Phaser, and aims to be a sort of virtual About Me. Find out more about my journey by collecting the gems!
